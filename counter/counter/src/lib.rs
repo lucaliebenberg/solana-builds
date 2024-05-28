@@ -8,6 +8,8 @@ use solana_program::{
     pubkey::Pubkey,
 };
 
+pub mod instructions;
+
 #[derive(Debug, BorshDeserialize, BorshSerialize)]
 pub struct CounterAccount {
     pub counter: u32
