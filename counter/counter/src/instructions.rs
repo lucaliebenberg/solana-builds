@@ -6,5 +6,5 @@ pub enum CounterInstructions {
     Increment,
     Decrement,
     Update,
-    Reset
+    Reset,
 }
