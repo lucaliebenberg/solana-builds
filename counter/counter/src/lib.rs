@@ -56,3 +56,53 @@ pub fn process_instruction(
     Ok(())
 
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use solana_program::{clock::Epoch, pubkey::Pubkey};
+    use std::mem;
+
+    #[test]
+    fn test_counter() {
+        let program_id = Pubkey::default();
+        let key = Pubkey::default();
+        let mut lamports = 0;
+        let mut data = vec![0;mem::size_of::<u32>()];
+        let owner = Pubkey::default();
+
+        let account = AccountInfo::new(
+            &key,
+            false,
+            true,
+            &mut lamports,
+            &mut data,
+            &owner,
+            false,
+            Epoch::default(),
+        );
+
+        let accounts = vec![account];
+
+        let increment_instruction_data: Vec<u8> = vec![0];
+        let derement_instruction_data: Vec<u8> = vec![1];
+        let mut update_instruction_data: Vec<u8> = vec![2];
+        let reset_instruction_data: Vec<u8> = vec![3];
+
+        process_instruction(&program_id, &accounts, &increment_instruction_data).unwrap();
+        assert_eq!(CounterAccount::try_from_slice(&accounts[0].data.borrow()).unwrap().counter, 1);
+
+        process_instruction(&program_id, &accounts, &derement_instruction_data).unwrap();
+        assert_eq!(CounterAccount::try_from_slice(&accounts[0].data.borrow()).unwrap().counter, 0);
+
+        process_instruction(&program_id, &accounts, &update_instruction_data).unwrap();
+        assert_eq!(CounterAccount::try_from_slice(&accounts[0].data.borrow()).unwrap().counter, 33);
+
+        process_instruction(&program_id, &accounts, &reset_instruction_data).unwrap();
+        assert_eq!(CounterAccount::try_from_slice(&accounts[0].data.borrow()).unwrap().counter, 0);
+
+        let update_value: u32 = 33u32;
+        update_instruction_data.extend_from_slice(&update_value.to_le_bytes())
+
+    }
+}
