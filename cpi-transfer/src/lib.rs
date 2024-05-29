@@ -20,5 +20,15 @@ pub fn process_instruction(
     accounts: &[AccountInfo],
     _instruction_data: &[u8],
 ) -> ProgramResult {
-    Ok(())
+    
+    let account_info_iter = &mut accounts.iter();
+
+    let source_info = next_account_info(account_info_iter)?;
+    let mint_info = next_mint_info(account_info_iter)?;
+    let destination_info = next_account_info(account_info_iter)?;
+    let authority_info = next_account_info(account_info_iter)?;
+    let token_program_info = next_account_info(account_info_iter)?;
+
+
+
 }
