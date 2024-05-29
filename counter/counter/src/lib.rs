@@ -37,11 +37,15 @@ pub fn process_instruction(
     let mut counter_account = CounterAccount::try_from_slice(&account.data.borrow())?;
 
     match instructions {
-        CounterInstructions::Increment => {
-            counter_account.counter += 1;
+        CounterInstructions::Increment(args) => {
+            counter_account.counter += args.value;
         }
-        CounterInstructions::Decrement => {
-            counter_account.counter -= 1;
+        CounterInstructions::Decrement(args) => {
+            if counter_account.counter < args.value {
+                counter_account.counter = 0
+            } else {
+                counter_account.counter -= args.value;
+            }
         }
         CounterInstructions::Reset => {
             counter_account.counter = 0;
@@ -103,6 +107,7 @@ mod test {
             0
         );
 
+        // TODO: resolve failing test
         // process_instruction(&program_id, &accounts, &update_instruction_data).unwrap();
         // assert_eq!(
         //     CounterAccount::try_from_slice(&accounts[0].data.borrow())

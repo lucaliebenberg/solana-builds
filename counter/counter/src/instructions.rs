@@ -7,9 +7,14 @@ pub struct UpdateArgs {
     pub value: u32,
 }
 
+#[derive(Debug, BorshDeserialize, BorshSerialize)]
+pub struct InstructionsArgs {
+    pub value: u32,
+}
+
 pub enum CounterInstructions {
-    Increment,
-    Decrement,
+    Increment(InstructionsArgs),
+    Decrement(InstructionsArgs),
     Update(UpdateArgs),
     Reset,
 }
@@ -21,8 +26,8 @@ impl CounterInstructions {
             .ok_or(ProgramError::InvalidInstructionData)?;
 
         Ok(match variant {
-            0 => Self::Increment,
-            1 => Self::Decrement,
+            0 => Self::Increment(InstructionsArgs::try_from_slice(rest)?),
+            1 => Self::Decrement(InstructionsArgs::try_from_slice(rest)?),
             2 => Self::Update(UpdateArgs::try_from_slice(rest).unwrap()),
             3 => Self::Reset,
             _ => return Err(ProgramError::InvalidInstructionData),
