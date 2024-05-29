@@ -35,6 +35,7 @@ pub fn process_instruction(
     }
 
     let source_account = Account::unpack(&source_info.try_borrow_data()?)?;
+    // TODO: modify this so that it wil transfer a hard coded amount
     let amount = source_account.amount;
 
     let mint = Mint::unpack(&mint_info.try_borrow_data()?)?;
